@@ -4,7 +4,7 @@ import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
 import Home from "./components/Home";
 import ManageEmployee from "./components/ManageEmployee";
-import Category from "./components/Category";
+import Category from "./components/Categories/Categories";
 import Profile from "./components/Profile";
 import Logout from "./components/Logout";
 import { Toaster } from "react-hot-toast";
