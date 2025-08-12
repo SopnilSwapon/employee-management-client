@@ -7,11 +7,12 @@ import ManageEmployee from "./components/ManageEmployee";
 import Category from "./components/Category";
 import Profile from "./components/Profile";
 import Logout from "./components/Logout";
+import { Toaster } from "react-hot-toast";
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/adminlogin" element={<Login />}></Route>
+        <Route path="/" element={<Login />}></Route>
         <Route path="/dashboard" element={<Dashboard />}>
           <Route path="" element={<Home />}></Route>
           <Route
@@ -23,6 +24,7 @@ function App() {
           <Route path="/dashboard/logout" element={<Logout />}></Route>
         </Route>
       </Routes>
+      <Toaster />
     </BrowserRouter>
   );
 }
