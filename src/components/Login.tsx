@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 type TUSER = {
@@ -23,9 +24,12 @@ export default function Login() {
         } else {
           // login failed - show error message
           setError(res.data.Error);
+          toast.error("Wrong email or password");
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        toast.error(err.message);
+      });
   };
 
   return (

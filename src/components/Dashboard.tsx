@@ -17,7 +17,7 @@ export default function Dashboard() {
             to="/dashboard/manage-employees"
             className="px-3 py-2 rounded hover:bg-gray-700 transition"
           >
-            Manage Employees
+            Employees
           </Link>
           <Link
             to="/dashboard/category"

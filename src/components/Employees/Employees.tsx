@@ -1,3 +1,4 @@
+import React from "react";
 import { useEffect, useState } from "react";
 import {
   Dialog,
@@ -17,22 +18,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import AddCategory from "./AddCategory";
 import toast from "react-hot-toast";
+import AddEmployee from "./AddEmployee";
 
-export interface ICategory {
+export interface IEmployee {
   id: number;
   category_name: string;
 }
 
-export interface ICategoriesResponse {
+interface IEmployeesResponse {
   status: boolean;
-  data: ICategory[];
+  data: IEmployee[];
 }
-
-export default function Category() {
+export default function ManageEmployee() {
   const [isDialogueOpen, setIsDialogueOpen] = useState(false);
-  const [allCategories, setAllCategories] = useState<ICategoriesResponse>();
+  const [allCategories, setAllCategories] = useState<IEmployeesResponse>();
 
   useEffect(() => {
     axios.get("http://localhost:3000/auth/categories").then((result) => {
@@ -45,14 +45,13 @@ export default function Category() {
       }
     });
   }, []);
-
   return (
     <Dialog open={isDialogueOpen} onOpenChange={setIsDialogueOpen}>
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Employee category</h1>
+        <h1 className="text-2xl font-bold">Employees</h1>
         <DialogTrigger className="flex justify-end" asChild>
-          <Button type="button" className="ml-auto">
-            Add Category
+          <Button type="button" className="ml-auto cursor-pointer">
+            Add Employee
           </Button>
         </DialogTrigger>
       </div>
@@ -61,7 +60,7 @@ export default function Category() {
         <TableHeader>
           <TableRow className="font-bold text-xl">
             <TableHead>Id</TableHead>
-            <TableHead>Category Name</TableHead>
+            <TableHead>Employee name</TableHead>
             <TableHead>Status</TableHead>
           </TableRow>
         </TableHeader>
@@ -76,10 +75,10 @@ export default function Category() {
         </TableBody>
       </Table>
       <DialogContent className="sm:max-w-[425px] bg-gray-500">
-        <AddCategory setIsDialogueOpen={setIsDialogueOpen} />
         <DialogHeader>
-          <DialogTitle>Add Category</DialogTitle>
+          <DialogTitle className="text-center">Add Employee</DialogTitle>
         </DialogHeader>
+        <AddEmployee setIsDialogueOpen={setIsDialogueOpen} />
       </DialogContent>
     </Dialog>
   );
