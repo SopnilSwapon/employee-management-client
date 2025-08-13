@@ -14,31 +14,30 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-interface IAddCategoryProps {
-  setIsAddEmployeeDialogueOpen: React.Dispatch<React.SetStateAction<boolean>>;
+interface IUpdateCategoryProps {
+  setIsUpdateEmployeeDialogueOpen: React.Dispatch<
+    React.SetStateAction<boolean>
+  >;
+  employee: IEmployee;
 }
 interface IEmployee {
+  id: number | string;
   name: string;
   category_name: string;
   salary: number | string;
   join_date: string | undefined;
 }
-const AddEmployee: React.FC<IAddCategoryProps> = ({
-  setIsAddEmployeeDialogueOpen,
+const UpdateEmployee: React.FC<IUpdateCategoryProps> = ({
+  setIsUpdateEmployeeDialogueOpen,
+  employee,
 }) => {
-  const [employeeInfo, setEmployeeInfo] = useState<IEmployee>({
-    name: "",
-    category_name: "",
-    salary: "",
-    join_date: "",
-  });
+  const [employeeInfo, setEmployeeInfo] = useState<IEmployee>(employee);
   const [allCategories, setAllCategories] = useState<ICategoriesResponse>();
   const [isCalenderOpen, setIsCalenderOpen] = React.useState(false);
   const [joinDate, setJoinDate] = React.useState<Date | undefined>(undefined);
   useEffect(() => {
     axios.get("http://localhost:3000/auth/categories").then((result) => {
       if (result.data.status) {
-        console.log(result.data);
         setAllCategories(result.data);
       } else {
         console.log(result.data, "last");
@@ -50,20 +49,26 @@ const AddEmployee: React.FC<IAddCategoryProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     axios
-      .post("http://localhost:3000/auth/add-employee", employeeInfo)
+      .put(
+        `http://localhost:3000/auth/update-employee/${employee.id}`,
+        employeeInfo
+      )
       .then((result) => {
         if (result.data.status) {
           setEmployeeInfo({
+            id: "",
             name: "",
             category_name: "",
             salary: "",
             join_date: "",
           });
-          setIsAddEmployeeDialogueOpen(false);
-          toast.success("Employee added successful!");
-          console.log(result.data.status);
+          setIsUpdateEmployeeDialogueOpen(false);
+          toast.success("Employee updateed successful!");
         } else {
-          console.error("Error submitting add employee:", result.data.Error);
+          console.error(
+            "Error submitting on update employee:",
+            result.data.Error
+          );
         }
       });
   };
@@ -75,6 +80,7 @@ const AddEmployee: React.FC<IAddCategoryProps> = ({
         </label>
         <input
           id="name"
+          defaultValue={employee.name}
           onChange={(e) =>
             setEmployeeInfo({ ...employeeInfo, name: e.target.value })
           }
@@ -95,6 +101,7 @@ const AddEmployee: React.FC<IAddCategoryProps> = ({
         <select
           className="w-full border border-gray-300 mt-3 rounded-md px-3 py-2 text-black"
           name="category_name"
+          value={employee.category_name}
           required
           id="category_name"
           onChange={(e) =>
@@ -103,7 +110,7 @@ const AddEmployee: React.FC<IAddCategoryProps> = ({
         >
           <option value="">Select a category</option>
           {allCategories?.data.map((category) => (
-            <option value={`${category.category_name}`}>
+            <option key={category.id} value={`${category.category_name}`}>
               {category.category_name}
             </option>
           ))}
@@ -118,6 +125,7 @@ const AddEmployee: React.FC<IAddCategoryProps> = ({
         </label>
         <input
           id="salary"
+          defaultValue={employee.salary}
           name="salary"
           onChange={(e) =>
             setEmployeeInfo({ ...employeeInfo, salary: e.target.value })
@@ -142,7 +150,7 @@ const AddEmployee: React.FC<IAddCategoryProps> = ({
               id="join_date"
               className="w-full bg-gray-500 justify-between hover:bg-transparent focus:bg-transparent"
             >
-              {joinDate ? joinDate.toLocaleDateString() : "Select date"}
+              {joinDate ? joinDate.toLocaleDateString() : employee.join_date}
               <ChevronDownIcon />
             </Button>
           </PopoverTrigger>
@@ -171,16 +179,21 @@ const AddEmployee: React.FC<IAddCategoryProps> = ({
 
       <DialogFooter>
         <DialogClose asChild>
-          <Button type="button" variant="outline" className="cursor-pointer">
+          <Button
+            onClick={() => setIsUpdateEmployeeDialogueOpen(false)}
+            type="button"
+            variant="outline"
+            className="cursor-pointer"
+          >
             Cancel
           </Button>
         </DialogClose>
         <Button type="submit" className="cursor-pointer">
-          Add
+          Update
         </Button>
       </DialogFooter>
     </form>
   );
 };
 
-export default AddEmployee;
+export default UpdateEmployee;
